@@ -8,13 +8,20 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.work.*
+import com.andrognito.flashbar.Flashbar
+import com.andrognito.flashbar.anim.FlashAnim
+import com.example.appgallery.R
 import com.example.appgallery.workmanger.TrackingGalleryWork
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
@@ -30,7 +37,70 @@ class Util @Inject constructor(@ApplicationContext val context: Context) {
    return Settings.Secure.getString(context.getContentResolver(),
             Settings.Secure.ANDROID_ID)
     }
+    fun checkAvalibalityOptions(checkEmptyOrNot: Any) :Boolean? { // when check empty strings or int or whatever you need
+        if (checkEmptyOrNot is Int) {
+            return (checkEmptyOrNot as Int)>0
+        }
+        else if (checkEmptyOrNot is String)
+            return (checkEmptyOrNot as String).isNotEmpty()
+        else if (checkEmptyOrNot is java.util.ArrayList<*>)
+            return (checkEmptyOrNot).size>0
+        return false // no supports value
+    }
+    fun showSnackMessages(
+        activity: Activity?,
+        error: String?,color : Int=R.color.red600
+    ) {
+        if (activity != null) {
+            Flashbar.Builder(activity)
+                .gravity(Flashbar.Gravity.TOP)
+                //.title(activity.getString(R.string.errors))
+                .message(error!!)
+                .backgroundColorRes(color)
+                .dismissOnTapOutside()
+                .duration(2500)
+                .enableSwipeToDismiss()
+                .enterAnimation(
+                    FlashAnim.with(activity)
+                        .animateBar()
+                        .duration(550)
+                        .alpha()
+                        .overshoot()
+                )
+                .exitAnimation(
+                    FlashAnim.with(activity)
+                        .animateBar()
+                        .duration(200)
+                        .anticipateOvershoot()
+                )
+                .build().show()
+        }
+    }
+    fun changeFragment(targetFragment: Fragment, fragmentManger : FragmentManager, id : Int) { // fragment no back
+        fragmentManger
+            .beginTransaction()
+            .replace(id, targetFragment, "fragment")
+            .setCustomAnimations(android.R.anim.fade_in,
+                android.R.anim.fade_out)
+            .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            .commit()
 
+    }
+    fun changeFragmentBack(activity: FragmentActivity, fragment: Fragment, tag: String, bundle: Bundle?, id : Int ) {
+
+        val transaction = activity?.supportFragmentManager?.beginTransaction()
+        if (bundle != null) {
+            fragment.arguments = bundle
+        }
+        transaction?.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+            R.anim.enter_from_left, R.anim.exit_to_right)
+        //R.id.frameLayout_direction+
+        transaction?.replace(id, fragment, tag)
+        transaction?.addToBackStack(tag)
+        //    transaction.addToBackStack(null)
+        transaction?.commit()
+
+    }
     fun scheduleWork(tag: String) {
         val photoCheckBuilder = OneTimeWorkRequest.Builder(TrackingGalleryWork::class.java)
     /*    val photoCheckBuilder = PeriodicWorkRequest.Builder(TrackingGalleryWork::class.java,
@@ -165,7 +235,7 @@ class Util @Inject constructor(@ApplicationContext val context: Context) {
     fun checkPermssionGrantedForImageAndFile(
         context: Activity,
         requestCode: Int,
-        fragment: Fragment?,
+     //   fragment: Fragment?,
         requestPermssions: ActivityResultLauncher<Array<String>>
     ) : Boolean {
         var allow = false

@@ -3,6 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/drawable/ic_background_permssion.xml" value="0.1175" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/drawable/ic_vector.xml" value="0.1065" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_base.xml" value="0.17481884057971014" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_container.xml" value="0.17481884057971014" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_introduction.xml" value="0.16" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_permission.xml" value="0.17481884057971014" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_phone.xml" value="0.16" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_video_board.xml" value="0.18" />
         <entry key="..\:/sample_project/AppGallery/app/src/main/res/layout/activity_main.xml" value="0.17255434782608695" />
       </map>
     </option>

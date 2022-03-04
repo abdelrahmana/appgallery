@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">AppGallery</string>
+    <string name="welcome">Welcome to</string>
+    <string name="continues">Continue</string>
+    <string name="policies">by signing up you are agreeing to our privacy policy and terms of service</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="skip_video">Skip Video</string>
+    <string name="permission">Permission</string>
+    <string name="allow">Allow</string>
+    <string name="cant_move_forward">You Need To Accept Permssions To Go Forward</string>
+    <string name="enter_phone">Enter Your Number</string>
+    <string name="fill_up">Fill in the field with your phone number</string>
+    <string name="phone">Enter Phone Number</string>
 </resources>

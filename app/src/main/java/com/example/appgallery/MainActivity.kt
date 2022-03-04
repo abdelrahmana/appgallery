@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermssions() {
         if (util.checkPermssionGrantedForImageAndFile(
                 this,
-                Util.PERMSSIONS_FILES, null, registerPicResult
+                Util.PERMSSIONS_FILES, /*null,*/ registerPicResult
             )
         ) // if the result ok go submit else on permssion
             callWorkManger(constraints)

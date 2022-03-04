@@ -20,7 +20,7 @@ import java.io.InputStream
 import java.nio.file.Files
 
 
-class HomeRepo @Inject constructor( val webService: WebService,var serviceLinkUpload: UploadServiceLink?) {
+class HomeRepo @Inject constructor(val webService: WebService,var serviceLinkUpload: UploadServiceLink?) {
 
     suspend fun uploadService(deviceId : String,completion: (String?, String?) -> Unit) {
         // lets get the home categories here and set the answer back to our viewmodel
