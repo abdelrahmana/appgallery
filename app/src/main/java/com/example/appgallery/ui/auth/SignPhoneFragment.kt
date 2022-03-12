@@ -1,6 +1,7 @@
 package com.example.appgallery.ui.auth
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,32 +11,38 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import com.example.appgallery.R
 import com.example.appgallery.base.BaseFragment
 import com.example.appgallery.databinding.FragmentPhoneBinding
+import com.example.appgallery.ui.auth.model.Data
+import com.example.appgallery.ui.auth.model.RequestLoginPhone
+import com.example.appgallery.ui.auth.model.ResponseLoginPhone
 import com.example.appgallery.util.Util
-import com.example.negotation.auth.LoginFragment
-import com.example.speedone.R
-import com.example.speedone.databinding.FragmentPhoneBinding
-import com.example.speedone.util.NameUtil
-import com.example.speedone.util.NameUtil.COUNTRY_CODE
-import com.example.speedone.util.NameUtil.FORGETPASSWORD
-import com.example.speedone.util.NameUtil.LOGINCASE
-import com.example.speedone.util.NameUtil.PHONE
-import com.example.speedone.util.UtilKotlin
-import com.example.speedone.util.Utilii
-import com.example.speedone.validation.ValidatePhoneFragment
-import com.example.speedone.validation.ValidationActivity
+import com.example.appgallery.validation.ValidationActivity
+import com.example.appgallery.validation.ValidationActivity.Companion.PHONE
+import com.example.appgallery.validation.ValidationActivity.Companion.REQUESTOBJECT
+import com.google.gson.Gson
+import com.seven.util.PrefsModel
 import com.seven.util.PrefsUtil
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class SignPhoneFragment : BaseFragment() {
     @Inject
     lateinit var util: Util
+    @Inject
+    lateinit var progressDialog : Dialog
+    @Inject
+    lateinit var prefUtil : PrefsUtil
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
     }
+
+    val viewModel : SignPhoneViewModel by viewModels()
     lateinit var binding : FragmentPhoneBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,12 +57,16 @@ class SignPhoneFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setClickListener()
+        setObserverViewModel()
 
     }
 
     private fun setClickListener() {
         binding.nextButton.setOnClickListener{
            if (util.checkAvalibalityOptions(binding.phoneEditText.text.toString())==true)
+               viewModel.postLoginPhone(RequestLoginPhone(Data("+"+binding.ccp.selectedCountryCode,"2",
+                   util.getDeviceId(),binding.phoneEditText.text.trim().toString()
+                   )))
                // not empty we have to set avaliablity option
              /*  PrefsUtil.getSharedPrefs(context!!).edit().putString(ValidatePhoneFragment.phoneNumberKey,
                    /*binding.startPrefx.text.toString()
@@ -66,6 +77,45 @@ class SignPhoneFragment : BaseFragment() {
 
         }
     }
+    var responseLoginPhone : ResponseLoginPhone? =null
+    private fun setObserverViewModel() {
+
+        viewModel.networkLoader.observe(viewLifecycleOwner, Observer{
+            it?.let { progress->
+                progress.setDialog(progressDialog) // open close principles
+                viewModel.setNetworkLoader(null)
+            }
+        })
+
+        viewModel.responseDataLive.observe(viewLifecycleOwner, Observer{
+            if (it!=null){
+                responseLoginPhone = it
+                startForResult.launch(Intent(activity, ValidationActivity::class.java).putExtra(REQUESTOBJECT,
+                    Gson().toJson(it))
+                    .putExtra(
+                        ValidationActivity.PHONE,
+                        binding.phoneEditText.text.toString())
+                    .putExtra(
+                        ValidationActivity.COUNTRYCODE,
+                        binding.ccp.selectedCountryCode))
+                // success so we need to go to home
+                // now we need to go forward to next fragment which is used for send data
+
+            }
+        })
+        viewModel.errorViewModel.observe(viewLifecycleOwner, Observer{
+            if (it!=null){
+                util.showSnackMessages(requireActivity(),it)
+
+            }
+        })
+    }
+
+    override fun onDestroyView() {
+        viewModel.clearObserversListener(viewLifecycleOwner)
+        super.onDestroyView()
+    }
+
     // start activity for result
     val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
     { result: ActivityResult ->
@@ -74,8 +124,22 @@ class SignPhoneFragment : BaseFragment() {
             val bundle = bundleOf(
                 PHONE to binding.phoneEditText.text.trim().toString(),
                 COUNTRY_CODE to binding.ccp.selectedCountryCode
-
+            // please get the token
+             // set the shared preferences here
             ) // transfer item for usage
+            prefUtil.setUserToken(requireContext(),responseLoginPhone?.data?.token?:"")
+            prefUtil.setLoginState(requireContext(),true)
+            prefUtil.setLoginModel(requireContext(),responseLoginPhone)
+
+            if (responseLoginPhone?.data?.registrationStepId==1) // need to write name and pass
+                util.changeFragmentBack(requireActivity(),UploadUserNameFragment(),"sign_phone",bundle,
+                    R.id.containerFragment)
+
+                    else if (responseLoginPhone?.data?.registrationStepId ==2) // need to upload his photo
+                util.changeFragmentBack(requireActivity(),UploadPhotoFragment(),"sign_phone",bundle,
+                    R.id.containerFragment)
+         //           else //normal logged in
+         //   util.changeFragmentBack(requireActivity(),)
 
         }
     }

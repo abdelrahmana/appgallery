@@ -2,7 +2,10 @@ package com.example.appgallery.repo
 
 import com.example.appgallery.apiconfig.UploadServiceLink
 import com.example.appgallery.apiconfig.WebService
+import com.example.appgallery.ui.auth.model.*
+import com.example.appgallery.workmanger.model.Datax
 import com.example.appgallery.workmanger.model.RequestUploadGson
+import com.example.appgallery.workmanger.model.RequestUploadGsonObject
 import com.example.appgallery.workmanger.model.ResponseUploadImage
 import com.skydoves.sandwich.onError
 import com.skydoves.sandwich.onException
@@ -12,6 +15,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.ResponseBody
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -66,6 +70,92 @@ class HomeRepo @Inject constructor(val webService: WebService,var serviceLinkUpl
         }
     }
 
+    suspend fun uploadProfileImage(jsonObject: RequestUploadGsonObject,
+                                   completion: (PresignedProfileRes?, String?) -> Unit) {
+
+        val res =  webService.postUploadPresignedFace(gson = jsonObject)
+        res.onSuccess {
+            completion(data ,null)
+
+        }
+        res.onException {
+            completion(null ,message.toString())
+
+
+        }
+        res.onError {
+            completion(null ,"error happend")
+        }
+    }
+    suspend fun postFaceVerfication(jsonObject: PostFaceVerficationRes,
+                                   completion: (ResponseBody?, String?) -> Unit) {
+
+        val res =  webService.postUploadFaceVerfication(jsonObject)
+        res.onSuccess {
+            completion(data ,null)
+
+        }
+        res.onException {
+            completion(null ,message.toString())
+
+
+        }
+        res.onError {
+            completion(null ,"There are no faces in the image")
+        }
+    }
+
+
+
+    suspend fun loginPhoneNumber(requestLoginPhone: RequestLoginPhone,completion: (ResponseLoginPhone?, String?) -> Unit) {
+
+        val res =  webService.postLoginPhone(requestLoginPhone)
+        res.onSuccess {
+            completion(data ,null)
+
+        }
+        res.onException {
+            completion(null ,message.toString())
+
+
+        }
+        res.onError {
+            completion(null ,"error happend")
+        }
+    }
+
+    suspend fun OtpVerfyingPost(requestLoginPhone: RequestOtpVerfying, completion: (ResponseBody?, String?) -> Unit) {
+
+        val res =  webService.postVerfyingPhoneNumber(requestLoginPhone)
+        res.onSuccess {
+            completion(data ,null)
+
+        }
+        res.onException {
+            completion(null ,message.toString())
+
+
+        }
+        res.onError {
+            completion(null ,"error happend")
+        }
+    }
+    suspend fun postUpdateInfo(postUploadRequest: PostUploadRequest, completion: (ResponseBody?, String?) -> Unit) {
+
+        val res =  webService.postUpdatingInfo(postUploadRequest)
+        res.onSuccess {
+            completion(data ,null)
+
+        }
+        res.onException {
+            completion(null ,message.toString())
+
+
+        }
+        res.onError {
+            completion(null ,"error happend")
+        }
+    }
    /* suspend fun uploadAmazonLink(/*query: LinkedHashMap<String, String>?*/query: String,
                                                                           restEndPoint: String, file: File,completion:(String?, String?) -> Unit
     ) {

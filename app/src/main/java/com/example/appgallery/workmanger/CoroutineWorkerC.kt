@@ -36,7 +36,6 @@ public open class CoroutineWorkerC  @AssistedInject constructor(
            // this should access repo directly
            //  Toast.makeText(applicationContext,"success",Toast.LENGTH_SHORT).show()
 
-           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
              if (context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                        context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ){
 
@@ -54,14 +53,14 @@ public open class CoroutineWorkerC  @AssistedInject constructor(
                        notification.runNotification(applicationContext)
                    }
                }*/
-                 val requestUploadGson = RequestUploadGson(ArrayList<Datax>().also { it.add(Datax("dasd",123,"jpeg",
+                 val requestUploadGson = RequestUploadGson(ArrayList<Datax>().also { it.add(Datax("dasd",123,"jpg",
                  "image")) })
                //  val json = JsonObject()
              //    json.addProperty("data",Gson().toJson(requestUploadGson.data))
               //   val result = Gson().toJson(requestUploadGson)
                  homeRepo.uploadImage(requestUploadGson) { success, errors ->
                      success?.let { it ->
-                         var baseUrl: String = it.data[0].image_presignedUrl.split("original/").get(0)+"original/"
+                         val baseUrl: String = it.data[0].image_presignedUrl.split("original/").get(0)+"original/"
                          val queryUrl: String = it.data[0].image_presignedUrl.split("original/").get(1)
                          val restEndPoint = queryUrl.split("?").get(0).toString()
                          val queries = queryUrl.split("?").get(1).toString()

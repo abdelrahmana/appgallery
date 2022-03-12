@@ -4,8 +4,10 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -22,14 +24,22 @@ import androidx.work.*
 import com.andrognito.flashbar.Flashbar
 import com.andrognito.flashbar.anim.FlashAnim
 import com.example.appgallery.R
+import com.example.appgallery.util.NameUtil.CAMERA
+import com.example.appgallery.util.NameUtil.GALLERY
 import com.example.appgallery.workmanger.TrackingGalleryWork
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class Util @Inject constructor(@ApplicationContext val context: Context) {
     @SuppressLint("HardwareIds")
@@ -231,7 +241,26 @@ class Util @Inject constructor(@ApplicationContext val context: Context) {
         }
         return listOfAllImages
     }
+    fun getCreatedFileFromBitmap(fileName: String, bitmapUpdatedImage: Bitmap, typeOfFile : String?, context: Context) : File {
+        val bytes =  ByteArrayOutputStream()
+        bitmapUpdatedImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        /*   val f = new File(Environment.getExternalStorageDirectory()
+                   + File.separator + "testimage.jpg");*/
+        val f =  initFile(fileName,typeOfFile?:"jpg",context)
+        f?.createNewFile()
+        val fo =  FileOutputStream(f)
+        fo.write(bytes.toByteArray())
+        fo.close()
 
+        return f!!
+    }
+    fun initFile(name :String,type : String,context: Context): File? {  // to delete file you need to get the absoloute paths for it and it's directory
+        var file : File? = null // creating file for video
+        file = File( context.cacheDir.absolutePath, SimpleDateFormat(
+            "'$name'yyyyMMddHHmmss'.$type'", Locale.ENGLISH).format(Date()))
+        //}
+        return file
+    }
     fun checkPermssionGrantedForImageAndFile(
         context: Activity,
         requestCode: Int,
@@ -240,29 +269,52 @@ class Util @Inject constructor(@ApplicationContext val context: Context) {
     ) : Boolean {
         var allow = false
         // imageView.setOnClickListener {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (context.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermssions.launch(
-                    arrayOf(
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    )
+        if (context.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+            context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+            context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermssions.launch(
+                arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
                 )
-            }else{
-                allow = true
-
-            }
-        } else {
-            // startCameraNow()
-            allow =  true
+            )
+        }else{
+            allow = true
 
         }
 
         //  }
         return allow
+    }
+    fun performImgPicAction(
+        which: Int,
+        fragment: Fragment?,
+        context: Activity,
+        onActivityResult: ActivityResultLauncher<Intent>,
+        registerGallery: ActivityResultLauncher<Intent>?
+    ) {
+        var intent: Intent?
+        if (which == GALLERY) {  // in case we need to get image from gallery
+            intent = Intent(
+                Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intent.putExtra(NameUtil.WHICHSELECTION, GALLERY)
+            registerGallery?.launch(intent)
+
+        } else {  // in case we need camera
+            intent = Intent()
+            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE)
+
+            intent.putExtra(NameUtil.WHICHSELECTION, CAMERA)
+            onActivityResult.launch(intent)
+
+
+        }
+        /*  if (fragment != null)
+              fragment.startActivityForResult(Intent.createChooser(intent, context.getString(R.string.selection_option)), which)
+          else
+              context.startActivityForResult(Intent.createChooser(intent, context.getString(R.string.selection_option)), which)
+      */
     }
     companion object {
         val COroutineWorker: String ="myWorkManager"

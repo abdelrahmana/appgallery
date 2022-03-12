@@ -1,19 +1,23 @@
 package com.example.appgallery.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.hilt.work.HiltWorker
 import com.example.appgallery.BuildConfig
 import com.example.appgallery.apiconfig.UploadServiceLink
 import com.example.appgallery.apiconfig.WebService
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.seven.util.PrefsUtil
 import com.skydoves.sandwich.coroutines.CoroutinesResponseCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.components.FragmentComponent
 import dagger.hilt.android.components.ServiceComponent
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 import okhttp3.*
@@ -29,8 +33,6 @@ import javax.inject.Qualifier
  @Module
  @InstallIn(ViewModelComponent::class, FragmentComponent::class,ServiceComponent::class)
 class RetrofitBuilder {
-    lateinit var apiService: WebService
-        private set
     var gson: Gson? = null
         get() {
             if (field == null) {
@@ -51,6 +53,11 @@ class RetrofitBuilder {
              WebService::class.java
          )
      }
+
+    @Provides
+    fun getDefultUrl():String {
+        return ""
+    }
 
     @Provides
     @AmazonRetrofit
@@ -81,7 +88,9 @@ class RetrofitBuilder {
                             context!!
                         )*/prefs.getString(PrefsModel.localLanguage, "en")?:"en")
                      .header("Authorization", PrefsUtil.getUserToken(context!!)?:"")*/
-                    .header("Authorization", "Bearer "+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXRhaWxzIjp7ImlkIjoiMDUxODA1IiwiZGV2aWNlSWQiOiI2NjYtNjY2NjYtNTU1LTU1NTU1LTY2NiJ9LCJ0aW1lIjoiMjAvMDIvMjAyMiAxMTo0MDo0MCIsImlhdCI6MTY0NTM1NzI0MCwiZXhwIjoxNjUzMTMzMjQwfQ.45dtb-PwA7lj3IhVntMK5Q5jLD2luvBhMCKbdSFFcRw")
+                    .header("accesstoken", /*"Bearer "+*/PrefsUtil().getUserToken(context!!)?:""
+                            /*"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXRhaWxzIjp7ImlkIjoiMDUxODA1IiwiZGV2aWNlSWQiOiI2NjYtNjY2NjYtNTU1LTU1NTU1LTY2NiJ9LCJ0aW1lIjoiMjAvMDIvMjAyMiAxMTo0MDo0MCIsImlhdCI6MTY0NTM1NzI0MCwiZXhwIjoxNjUzMTMzMjQwfQ.45dtb-PwA7lj3IhVntMK5Q5jLD2luvBhMCKbdSFFcRw"*/
+                    )
                      .method(original.method, original.body)
                      .build()
             )
@@ -106,7 +115,11 @@ class RetrofitBuilder {
         return okHttpAuthClient!!
     }
 
-
+   /* @Provides
+    fun getSharedPrefs(@ActivityContext context: Context?) : PrefsUtil {
+        return PrefsUtil()
+        //    val guest = PrefsUtil.getSharedPrefs(context).getBoolean(PrefsModel.isGuestUser,false)
+    }*/
 
     fun getRetrofit(client: OkHttpClient?, BASE_URL: String): Retrofit {
         if (retrofit == null) {

@@ -8,9 +8,14 @@
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_base.xml" value="0.17481884057971014" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_container.xml" value="0.17481884057971014" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_introduction.xml" value="0.16" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_validation.xml" value="0.2" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_permission.xml" value="0.17481884057971014" />
-        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_phone.xml" value="0.16" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_phone.xml" value="0.15" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_upload_photo.xml" value="0.17708333333333334" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_upload_user_name.xml" value="0.1" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_validation.xml" value="0.2" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_video_board.xml" value="0.18" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/loader_layout.xml" value="0.2" />
         <entry key="..\:/sample_project/AppGallery/app/src/main/res/layout/activity_main.xml" value="0.17255434782608695" />
       </map>
     </option>

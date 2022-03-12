@@ -8,8 +8,10 @@ import com.example.appgallery.base.BaseActivity
 import com.example.appgallery.container.ContainerActivity
 import com.example.appgallery.databinding.ActivityIntroductionBinding
 import com.example.appgallery.util.Util
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class IntroductionActivity : BaseActivity() {
     lateinit var binding : ActivityIntroductionBinding
     @Inject

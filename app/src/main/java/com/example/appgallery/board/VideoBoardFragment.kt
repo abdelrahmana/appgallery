@@ -14,10 +14,13 @@ import androidx.fragment.app.Fragment
 import com.example.appgallery.R
 import com.example.appgallery.base.BaseFragment
 import com.example.appgallery.databinding.FragmentVideoBoardBinding
+import com.example.appgallery.ui.auth.SignPhoneFragment
 import com.example.appgallery.ui.permisson.PermissionFragment
 import com.example.appgallery.util.Util
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class VideoBoardFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +36,7 @@ class VideoBoardFragment : BaseFragment() {
         // Inflate the layout for this fragment
         binding = FragmentVideoBoardBinding.inflate(layoutInflater,container,false)
         binding.skipContainer.setOnClickListener{
+            countDownTimer?.cancel()
             moveFrowardSkip()
         }
         setCountDownTimer()
@@ -47,7 +51,8 @@ class VideoBoardFragment : BaseFragment() {
             context?.checkSelfPermission(Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_GRANTED )
                 // now we need to move forward to sign up
-
+            util.changeFragmentBack(requireActivity(),SignPhoneFragment(),VIDEOFRAG,null
+                ,R.id.containerFragment)
                     else
                         util.changeFragmentBack(requireActivity(),PermissionFragment(),VIDEOFRAG,null
                             ,R.id.containerFragment)

@@ -1,6 +1,9 @@
 package com.example.appgallery.ui.permisson
 
+import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,9 +14,12 @@ import com.example.appgallery.R
 import com.example.appgallery.base.BaseFragment
 import com.example.appgallery.container.ContainerActivity
 import com.example.appgallery.databinding.FragmentPermissionBinding
+import com.example.appgallery.ui.auth.SignPhoneFragment
 import com.example.appgallery.util.Util
+import dagger.hilt.android.AndroidEntryPoint
+import java.io.IOException
 import javax.inject.Inject
-
+@AndroidEntryPoint
 class PermissionFragment : BaseFragment() {
     @Inject
     lateinit var util: Util
@@ -41,7 +47,8 @@ class PermissionFragment : BaseFragment() {
                 Util.PERMSSIONS_FILES, accessPermssionCallBack
             )
         )
-      startActivity(Intent(requireContext(),ContainerActivity::class.java))
+            util.changeFragmentBack(requireActivity(),SignPhoneFragment(),"permission",null,R.id.containerFragment)
+     // startActivity(Intent(requireContext(),ContainerActivity::class.java))
     }
 
     val accessPermssionCallBack =  registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions())
@@ -51,7 +58,7 @@ class PermissionFragment : BaseFragment() {
         }
         if (granted)
             // go to the validation fragment
-           startActivity(Intent(requireContext(),ContainerActivity::class.java))
+            util.changeFragmentBack(requireActivity(),SignPhoneFragment(),"permission",null,R.id.containerFragment)
         else
             util.showSnackMessages(activity, getString(R.string.cant_move_forward))
 

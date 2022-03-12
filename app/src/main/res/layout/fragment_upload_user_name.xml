@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/app_color"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.auth.UploadUserNameFragment">
+    <TextView
+        android:id="@+id/header"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_40sdp"
+        android:text="@string/personal"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_14sdp"
+        />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
+        android:layout_marginTop="@dimen/_25sdp"
+        android:layout_gravity="center"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:civ_circle_background_color="@color/app_color"
+        android:src="@android:drawable/ic_menu_camera"
+        app:civ_border_width="2dp"
+        app:civ_border_color="@color/white_68"/>
+    <com.google.android.material.card.MaterialCardView
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/card_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_25sdp"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:layout_marginBottom="10dp"
+        android:minHeight="50dp"
+        app:cardBackgroundColor="@color/button_sign"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="0dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/userNameEditText"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="0dp"
+                android:textAlignment="viewStart"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/gray"
+                android:layout_marginStart="@dimen/_7sdp"
+                android:layout_marginEnd="@dimen/_7sdp"
+                android:background="@null"
+                android:drawablePadding="10dp"
+                android:inputType="text"
+                android:hint="@string/user_name"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+    <com.google.android.material.button.MaterialButton
+        app:layout_constraintStart_toStartOf="parent"
+        app:cornerRadius="25dp"
+        android:layout_marginTop="@dimen/_45sdp"
+        android:layout_gravity="center"
+        android:id="@+id/continueButton"
+        android:text="@string/continues"
+        app:backgroundTint="@color/green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/platform"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_45sdp"/>
+</LinearLayout>

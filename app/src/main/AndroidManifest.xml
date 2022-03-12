@@ -40,6 +40,10 @@
 
         </activity>
 
+        <activity
+            android:exported="false"
+            android:name=".validation.ValidationActivity"/>
+
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"

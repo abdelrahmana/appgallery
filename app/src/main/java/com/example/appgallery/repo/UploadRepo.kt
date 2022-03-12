@@ -19,7 +19,7 @@ class UploadRepo @Inject constructor(var serviceLinkUpload: UploadServiceLink?,@
         query: String, restEndPoint: String, file: File
         ,completion:(String?, String?) -> Unit
     ) {
-        val requestBody: RequestBody = file.asRequestBody("binary/octet-stream".toMediaTypeOrNull())
+     /*   val requestBody: RequestBody = file.asRequestBody("binary/octet-stream".toMediaTypeOrNull())
       //  val requestFile = RequestBody.create("binary/octet-stream".toMediaTypeOrNull(), Files.readAllBytes(file))
         val builder =   MultipartBody.Builder()
         builder.setType(MultipartBody.FORM)
@@ -44,6 +44,8 @@ class UploadRepo @Inject constructor(var serviceLinkUpload: UploadServiceLink?,@
           res?.onError {
               completion(null ,errorBody.toString())
           }*/
+          */*
+      */
         uploadImageToServer(convertFileToBytes(file),query,completion)
     }
     private fun uploadImageToServer(
@@ -62,7 +64,7 @@ class UploadRepo @Inject constructor(var serviceLinkUpload: UploadServiceLink?,@
                 object : Response.ErrorListener {
                     override fun onErrorResponse(error: VolleyError) {
                         Log.e("error response", error.toString())
-                        completion("error response",null)
+                        completion(null,"error response")
 
                     }
                 }) {

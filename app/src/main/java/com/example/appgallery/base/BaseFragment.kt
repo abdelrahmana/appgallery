@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import com.example.appgallery.R
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 open class BaseFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
