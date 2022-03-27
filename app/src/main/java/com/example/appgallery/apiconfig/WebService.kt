@@ -1,6 +1,8 @@
 package com.example.appgallery.apiconfig
 
 import com.example.appgallery.ui.auth.model.*
+import com.example.appgallery.ui.home.model.PhotosResponseList
+import com.example.appgallery.ui.home.model.PhotosUserResponse
 import com.example.appgallery.workmanger.model.RequestUploadGson
 import com.example.appgallery.workmanger.model.RequestUploadGsonObject
 import com.example.appgallery.workmanger.model.ResponseUploadImage
@@ -41,4 +43,17 @@ interface WebService {
 
     @PUT("accountData")
     suspend fun postUpdatingInfo(@Body requestLoginPhone: PostUploadRequest): ApiResponse<ResponseBody>
+
+    @GET("photosOfFriendsList")
+    suspend fun getPhotosFriendsList(@HeaderMap hashMap: HashMap<String,Any>): ApiResponse<PhotosResponseList>
+
+    @GET("photosOfMeList")
+    suspend fun getPhotosOfMeList(@HeaderMap hashMap: HashMap<String,Any>): ApiResponse<PhotosResponseList>
+
+    @GET("photosOfMeUser")
+    suspend fun getPhotosOfMeUser(@HeaderMap hashMap: HashMap<String,Any>): ApiResponse<PhotosUserResponse>
+
+    @GET("photosOfFriendsUser")
+    suspend fun getPhotosOfFriendsUser(@HeaderMap hashMap: HashMap<String,Any>): ApiResponse<PhotosUserResponse>
+
 }

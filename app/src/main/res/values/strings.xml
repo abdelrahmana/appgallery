@@ -18,7 +18,10 @@
     <string name="user_name">UserName</string>
     <string name="please_enter_name">Please Enter UserName</string>
     <string name="personal_info_updated_successfully">Personal Info Updated Succesfully</string>
-    <string name="strike">Strike This Pose</string>
+    <string name="strike">Registering your face</string>
     <string name="take_photo">Take Photo</string>
     <string name="image_uploaded_successfully">Image Uploaded Successfully</string>
+    <string name="no_result">No Result</string>
+    <string name="download">Download</string>
+    <string name="log_out">LogOut</string>
 </resources>

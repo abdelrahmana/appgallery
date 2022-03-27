@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:layout_constraintTop_toTopOf="parent"
+    android:id="@+id/materialPopUp"
+    app:cardCornerRadius="0dp"
+    app:cardBackgroundColor="@color/black"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:minHeight="@dimen/_200sdp"
+    android:minWidth="260dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/videoDraggingContainer"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+       <!-- <androidx.constraintlayout.widget.ConstraintLayout
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/videoParent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:id="@+id/main_media_frame"
+                android:layout_width="match_parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_height="match_parent"
+                >
+                <com.google.android.exoplayer2.ui.PlayerView
+                    android:id="@+id/videoFullScreenPlayer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#A6000000"
+                    app:resize_mode="zoom"
+                    app:controller_layout_id="@layout/exo_playback_control_view"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:player_layout_id="@layout/exo_simple_player_view"
+                    app:repeat_toggle_modes="none"
+                    app:show_timeout="45000"
+                    app:surface_type="texture_view">
+
+
+                </com.google.android.exoplayer2.ui.PlayerView>
+            </FrameLayout>
+            <ProgressBar
+                android:id="@+id/spinnerVideoDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:indeterminate="true"
+                app:layout_constraintBottom_toBottomOf="@+id/main_media_frame"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>-->
+        <ImageView
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/imageService"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:scaleType="centerCrop"
+            android:layout_height="@dimen/_300sdp"/>
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:minHeight="90dp"
+            app:cardBackgroundColor="@color/app_color"
+            app:cardCornerRadius="10dp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            app:layout_constraintTop_toBottomOf="@+id/imageService"
+            app:layout_constraintEnd_toEndOf="@+id/imageService">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:id="@+id/downloadConstrain"
+                android:minHeight="90dp"
+                android:layout_height="match_parent">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/imageUser"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="10dp"
+            app:srcCompat="@drawable/ic_download"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="25dp"
+            android:layout_height="25dp"/>
+                <TextView
+                    android:text="@string/download"
+                    android:layout_marginTop="5dp"
+                    android:textSize="13sp"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageUser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

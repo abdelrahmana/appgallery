@@ -14,6 +14,8 @@ import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.example.appgallery.databinding.LoaderLayoutBinding
+import com.example.appgallery.util.GetObjectGson
+import com.example.appgallery.util.Util
 import com.seven.util.PrefsUtil
 import dagger.Module
 import dagger.Provides
@@ -47,7 +49,10 @@ class CommonDi {
         return PrefsUtil()
         //    val guest = PrefsUtil.getSharedPrefs(context).getBoolean(PrefsModel.isGuestUser,false)
     }
-
+    @Provides
+    fun getGsonObjet(@ApplicationContext context: Context): GetObjectGson {
+        return  GetObjectGson()
+    }
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
     annotation class SHAREDPrefs

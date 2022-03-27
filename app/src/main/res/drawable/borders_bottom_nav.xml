@@ -1,0 +1,18 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:topLeftRadius="5dp"
+                android:topRightRadius="5dp"/>
+
+            <solid android:color="@color/button_sign" />
+        </shape>
+    </item>
+    <item android:top="1dp">
+        <shape android:shape="rectangle">
+            <corners android:topLeftRadius="5dp"
+                android:topRightRadius="5dp"/>
+            <stroke android:width="0dp" android:color="@android:color/transparent"/>
+            <solid android:color="@color/app_color" />
+        </shape>
+    </item>
+</layer-list>

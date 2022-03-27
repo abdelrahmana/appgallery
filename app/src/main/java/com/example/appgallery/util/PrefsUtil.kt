@@ -22,7 +22,7 @@ class PrefsUtil {
         } catch (e: Exception) {
             e.printStackTrace()
         }*/
-        return value
+        return  value
     }
 
     fun removeKey(ctx: Context, key: String?) {

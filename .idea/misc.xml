@@ -3,19 +3,35 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/drawable-xxhdpi/friends_photos.xml" value="0.1025" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/drawable/borders_bottom_nav.xml" value="0.1025" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/drawable/friends_photos.xml" value="0.1025" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/drawable/ic_background_permssion.xml" value="0.1175" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/drawable/ic_vector.xml" value="0.1065" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/drawable/photos_clicked.xml" value="0.1025" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/drawable/photos_selection.xml" value="0.1025" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/drawable/photos_unclicked.xml" value="0.1025" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_base.xml" value="0.17481884057971014" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_container.xml" value="0.17481884057971014" />
-        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_introduction.xml" value="0.16" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_home.xml" value="0.17708333333333334" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_introduction.xml" value="0.1" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_validation.xml" value="0.2" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_permission.xml" value="0.17481884057971014" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_phone.xml" value="0.15" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_photos_friends_list.xml" value="0.1" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_upload_photo.xml" value="0.17708333333333334" />
-        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_upload_user_name.xml" value="0.1" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_upload_user_name.xml" value="0.22" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_validation.xml" value="0.2" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_video_board.xml" value="0.18" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/image_slider_viewpager.xml" value="0.17708333333333334" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/loader_layout.xml" value="0.2" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/photos_image_adapter.xml" value="0.17708333333333334" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/photos_of_me_list.xml" value="0.19202898550724637" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/photos_root_item.xml" value="0.17708333333333334" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/popup_service.xml" value="0.15" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/menu/bottom_navigattion.xml" value="0.2" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1025" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/xml/file_paths.xml" value="0.17798913043478262" />
         <entry key="..\:/sample_project/AppGallery/app/src/main/res/layout/activity_main.xml" value="0.17255434782608695" />
       </map>
     </option>

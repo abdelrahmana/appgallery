@@ -12,3 +12,15 @@ class VideoPageImplementer(val fragment: Fragment) :InterfaceRedirections{
     }
 
 }
+class UplodUserName(val fragment: Fragment) :InterfaceRedirections{
+    override fun getCurrentFragmnet(): Fragment {
+        return fragment
+    }
+
+}
+class UploadPhotoImplementer(val fragment: Fragment) :InterfaceRedirections{
+    override fun getCurrentFragmnet(): Fragment {
+        return fragment
+    }
+
+}

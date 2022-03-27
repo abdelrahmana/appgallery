@@ -3,6 +3,7 @@ package com.example.appgallery.util
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,15 +12,21 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.*
 import com.andrognito.flashbar.Flashbar
 import com.andrognito.flashbar.anim.FlashAnim
@@ -30,16 +37,17 @@ import com.example.appgallery.workmanger.TrackingGalleryWork
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
+import com.seven.util.PrefsModel
+import com.seven.util.PrefsUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
+
 
 class Util @Inject constructor(@ApplicationContext val context: Context) {
     @SuppressLint("HardwareIds")
@@ -254,6 +262,11 @@ class Util @Inject constructor(@ApplicationContext val context: Context) {
 
         return f!!
     }
+    private fun createImageFileInAppDir(context: Context): File {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val imagePath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return   File(imagePath, "JPEG_${timeStamp}_" + ".jpg")
+    }
     fun initFile(name :String,type : String,context: Context): File? {  // to delete file you need to get the absoloute paths for it and it's directory
         var file : File? = null // creating file for video
         file = File( context.cacheDir.absolutePath, SimpleDateFormat(
@@ -293,8 +306,9 @@ class Util @Inject constructor(@ApplicationContext val context: Context) {
         context: Activity,
         onActivityResult: ActivityResultLauncher<Intent>,
         registerGallery: ActivityResultLauncher<Intent>?
-    ) {
+    ): Uri? {
         var intent: Intent?
+        var photoUri : Uri? =null
         if (which == GALLERY) {  // in case we need to get image from gallery
             intent = Intent(
                 Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -302,10 +316,33 @@ class Util @Inject constructor(@ApplicationContext val context: Context) {
             registerGallery?.launch(intent)
 
         } else {  // in case we need camera
-            intent = Intent()
-            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE)
 
-            intent.putExtra(NameUtil.WHICHSELECTION, CAMERA)
+          /*  intent = Intent()
+            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE)
+            val file = initFile("face,","jpg",context)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, file!!.toUri());
+            intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
+            intent.putExtra(NameUtil.WHICHSELECTION, CAMERA)*/
+           intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val photoFile: File? = try {
+                createImageFileInAppDir(context)
+//                initFile("face,","jpg",context)
+            } catch (ex: IOException) {
+                // Error occurred while creating the File
+                null
+            }
+
+            photoFile?.also { file ->
+                val photoURI: Uri = FileProvider.getUriForFile(
+                    context,
+                    "com.example.android.provider",
+                    file
+                )
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                 photoUri = photoURI
+            }
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+          //  startActivityForResult(intent, ACTION_REQUEST_CAMERA)
             onActivityResult.launch(intent)
 
 
@@ -315,6 +352,54 @@ class Util @Inject constructor(@ApplicationContext val context: Context) {
           else
               context.startActivityForResult(Intent.createChooser(intent, context.getString(R.string.selection_option)), which)
       */
+        return  photoUri
+    }
+     fun downloadImageNew(context: Context,filename: String, downloadUrlOfImage: String) {
+        try {
+            val dm = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
+            val downloadUri = Uri.parse(downloadUrlOfImage)
+            val request = DownloadManager.Request(downloadUri)
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
+                .setAllowedOverRoaming(false)
+                .setTitle(filename)
+                .setMimeType("image/jpeg") // Your file type. You can use this code to download other file types also.
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setDestinationInExternalPublicDir(
+                    Environment.DIRECTORY_PICTURES,
+                    File.separator + filename + ".jpg"
+                )
+            dm!!.enqueue(request)
+            Toast.makeText(context, "Image download started.", Toast.LENGTH_SHORT).show()
+        } catch (e: java.lang.Exception) {
+            Toast.makeText(context, "Image download failed.", Toast.LENGTH_SHORT).show()
+        }
+    }
+    fun setRecycleView(recyclerView: RecyclerView?, adaptor: RecyclerView.Adapter<*>,
+                       verticalOrHorizontal: Int?, context:Context, gridModel: GridModel?,
+                       includeEdge : Boolean) {
+        var layoutManger : RecyclerView.LayoutManager? = null
+        if (gridModel==null) // normal linear
+            layoutManger = LinearLayoutManager(context, verticalOrHorizontal!!,false)
+        else
+        {
+            layoutManger = GridLayoutManager(context, gridModel.numberOfItems)
+            if (recyclerView?.itemDecorationCount==0)
+                recyclerView?.addItemDecoration(SpacesItemDecoration(gridModel.numberOfItems
+                    , gridModel.space, includeEdge))
+        }
+        recyclerView?.apply {
+            setLayoutManager(layoutManger)
+            setHasFixedSize(true)
+            adapter = adaptor
+
+        }
+    }
+    fun localSignOut(activity: Activity?,intent : Intent,prefsUtil: PrefsUtil) {
+        prefsUtil.removeKey(activity!! , PrefsModel.TOKEN)
+        prefsUtil.setLoginModel(activity!!, false)
+        prefsUtil.removeKey(activity!! , PrefsModel.userModel)
+        activity.startActivity(intent) // go to home please
+        activity.finishAffinity()
     }
     companion object {
         val COroutineWorker: String ="myWorkManager"

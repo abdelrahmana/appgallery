@@ -11,6 +11,8 @@ import dagger.hilt.android.scopes.ViewModelScoped
 open class BaseViewModel : ViewModel() {
     private val _errorViewModel = MutableLiveData<String?>()
     val errorViewModel :LiveData<String?> = _errorViewModel
+    private var loadPreviousNavBottom = MutableLiveData<Int>()
+     var _loadPreviousNavBottom : LiveData<Int> = loadPreviousNavBottom
 
     private val _responseDataCodeLocation = MutableLiveData<Location?>()
     val responseDataCodeLocation :LiveData<Location?> = _responseDataCodeLocation

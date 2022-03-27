@@ -3,6 +3,9 @@ package com.example.appgallery.repo
 import com.example.appgallery.apiconfig.UploadServiceLink
 import com.example.appgallery.apiconfig.WebService
 import com.example.appgallery.ui.auth.model.*
+import com.example.appgallery.ui.home.model.PhotosArray
+import com.example.appgallery.ui.home.model.PhotosResponseList
+import com.example.appgallery.ui.home.photosuser.PhotosOperationInterface
 import com.example.appgallery.workmanger.model.Datax
 import com.example.appgallery.workmanger.model.RequestUploadGson
 import com.example.appgallery.workmanger.model.RequestUploadGsonObject
@@ -22,6 +25,8 @@ import java.util.*
 import javax.inject.Inject
 import java.io.InputStream
 import java.nio.file.Files
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class HomeRepo @Inject constructor(val webService: WebService,var serviceLinkUpload: UploadServiceLink?) {
@@ -145,6 +150,57 @@ class HomeRepo @Inject constructor(val webService: WebService,var serviceLinkUpl
         val res =  webService.postUpdatingInfo(postUploadRequest)
         res.onSuccess {
             completion(data ,null)
+
+        }
+        res.onException {
+            completion(null ,message.toString())
+
+
+        }
+        res.onError {
+            completion(null ,"error happend")
+        }
+    }
+    suspend fun getPhotosFriendsList(headerMap : HashMap<String,Any>,
+                                     completion: (List<com.example.appgallery.ui.home.model.Data>?, String?) -> Unit) {
+
+        val res =  webService.getPhotosFriendsList(headerMap)
+        res.onSuccess {
+            completion(data?.data ,null)
+
+        }
+        res.onException {
+            completion(null ,message.toString())
+
+
+        }
+        res.onError {
+            completion(null ,"error happend")
+        }
+    }
+    suspend fun getPhotosUser(headerMap : HashMap<String,Any>, photos: PhotosOperationInterface,
+                              completion: (List<PhotosArray>?, String?) -> Unit) {
+
+        val res = photos.getCallApiResponse(webService,headerMap) //webService.getPhotosFriendsList(headerMap)
+        res.onSuccess {
+            completion(data?.data ,null)
+
+        }
+        res.onException {
+            completion(null ,message.toString())
+
+
+        }
+        res.onError {
+            completion(null ,"error happend")
+        }
+    }
+    suspend fun getPhotosOfMeList(headerMap : HashMap<String,Any>,
+                                     completion: (List<com.example.appgallery.ui.home.model.Data>?, String?) -> Unit) {
+
+        val res =  webService.getPhotosOfMeList(headerMap)
+        res.onSuccess {
+            completion(data?.data ,null)
 
         }
         res.onException {

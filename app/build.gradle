@@ -7,7 +7,10 @@ plugins {
 apply plugin: 'kotlin-android-extensions'
 android {
     compileSdk 32
-
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
     defaultConfig {
         applicationId "com.example.appgallery"
         minSdk 23

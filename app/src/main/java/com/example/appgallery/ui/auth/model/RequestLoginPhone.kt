@@ -1,5 +1,7 @@
 package com.example.appgallery.ui.auth.model
 
+import android.os.Build
+
 data class RequestLoginPhone(
     val `data`: Data
 )
@@ -9,6 +11,6 @@ data class Data(
     val countryCodeId: String,
     val deviceId: String,
     val tel: String,
-    val deviceMake: String="default_make",
-    val deviceModel: String="model",
+    val deviceMake: String= Build.MANUFACTURER,
+    val deviceModel: String=Build.MODEL
 )

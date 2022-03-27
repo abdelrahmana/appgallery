@@ -15,10 +15,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.appgallery.R
 import com.example.appgallery.base.BaseFragment
+import com.example.appgallery.container.ContainerActivity
 import com.example.appgallery.databinding.FragmentPhoneBinding
 import com.example.appgallery.ui.auth.model.Data
 import com.example.appgallery.ui.auth.model.RequestLoginPhone
 import com.example.appgallery.ui.auth.model.ResponseLoginPhone
+import com.example.appgallery.ui.home.HomeActivityBottomNav
 import com.example.appgallery.util.Util
 import com.example.appgallery.validation.ValidationActivity
 import com.example.appgallery.validation.ValidationActivity.Companion.PHONE
@@ -44,6 +46,7 @@ class SignPhoneFragment : BaseFragment() {
 
     val viewModel : SignPhoneViewModel by viewModels()
     lateinit var binding : FragmentPhoneBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,12 +63,17 @@ class SignPhoneFragment : BaseFragment() {
         setObserverViewModel()
 
     }
-
+    var currentPhone = ""
     private fun setClickListener() {
         binding.nextButton.setOnClickListener{
+            currentPhone = if (binding.phoneEditText.text.trim().startsWith("0"))
+                binding.phoneEditText.text.trim().toString().substring(1)
+            else
+                binding.phoneEditText.text.trim().toString()
            if (util.checkAvalibalityOptions(binding.phoneEditText.text.toString())==true)
-               viewModel.postLoginPhone(RequestLoginPhone(Data("+"+binding.ccp.selectedCountryCode,"2",
-                   util.getDeviceId(),binding.phoneEditText.text.trim().toString()
+               viewModel.postLoginPhone(RequestLoginPhone(Data("+"+binding.ccp.selectedCountryCode,
+                   "2",
+                   util.getDeviceId(),/*binding.phoneEditText.text.trim().toString()*/currentPhone
                    )))
                // not empty we have to set avaliablity option
              /*  PrefsUtil.getSharedPrefs(context!!).edit().putString(ValidatePhoneFragment.phoneNumberKey,
@@ -94,7 +102,7 @@ class SignPhoneFragment : BaseFragment() {
                     Gson().toJson(it))
                     .putExtra(
                         ValidationActivity.PHONE,
-                        binding.phoneEditText.text.toString())
+                        /*binding.phoneEditText.text.toString()*/currentPhone)
                     .putExtra(
                         ValidationActivity.COUNTRYCODE,
                         binding.ccp.selectedCountryCode))
@@ -122,7 +130,7 @@ class SignPhoneFragment : BaseFragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             //  you will get result here in result.data
             val bundle = bundleOf(
-                PHONE to binding.phoneEditText.text.trim().toString(),
+                PHONE to /*binding.phoneEditText.text.trim().toString()*/currentPhone,
                 COUNTRY_CODE to binding.ccp.selectedCountryCode
             // please get the token
              // set the shared preferences here
@@ -130,15 +138,27 @@ class SignPhoneFragment : BaseFragment() {
             prefUtil.setUserToken(requireContext(),responseLoginPhone?.data?.token?:"")
             prefUtil.setLoginState(requireContext(),true)
             prefUtil.setLoginModel(requireContext(),responseLoginPhone)
-
+            var intentRedirections : Intent? =null
             if (responseLoginPhone?.data?.registrationStepId==1) // need to write name and pass
-                util.changeFragmentBack(requireActivity(),UploadUserNameFragment(),"sign_phone",bundle,
-                    R.id.containerFragment)
+              /*  util.changeFragmentBack(requireActivity(),UploadUserNameFragment(),"sign_phone",bundle,
+                    R.id.containerFragment)*/
+                intentRedirections = Intent(requireContext(),
+                    ContainerActivity(/*UploadPhotoImplementer(UploadUserNameFragment())*/)::class.java)
+                    .putExtra(
+                    ContainerActivity.ACTION,1)
 
-                    else if (responseLoginPhone?.data?.registrationStepId ==2) // need to upload his photo
-                util.changeFragmentBack(requireActivity(),UploadPhotoFragment(),"sign_phone",bundle,
-                    R.id.containerFragment)
-         //           else //normal logged in
+
+            else if (responseLoginPhone?.data?.registrationStepId ==2) // need to upload his photo
+              /*  util.changeFragmentBack(requireActivity(),UploadPhotoFragment(),"sign_phone",bundle,
+                    R.id.containerFragment)*/
+                intentRedirections = Intent(requireContext(),
+                    ContainerActivity(/*UploadPhotoImplementer(UploadUserNameFragment())*/)::class.java)
+                    .putExtra(
+                        ContainerActivity.ACTION,2)
+                   else //normal logged in
+                intentRedirections = Intent(requireActivity(),HomeActivityBottomNav::class.java)
+                       startActivity(intentRedirections)
+            activity?.finish()
          //   util.changeFragmentBack(requireActivity(),)
 
         }

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--  <item
+          android:id="@+id/todaysArticles"
+          android:icon="@drawable/ic_todaynews_bottom"
+          android:title="@string/todays" />-->
+
+    <item
+        android:id="@+id/photosItem"
+        android:icon="@drawable/photos_selection"
+        android:title="" />
+
+    <item
+        android:id="@+id/friends_photos"
+        android:icon="@drawable/friends_photos"
+        android:title=""
+        />
+    <!--  <item
+          android:id="@+id/addAds"
+          android:title=""
+          />-->
+   <!-- <item
+        android:id="@+id/notificationUser"
+        android:icon="@drawable/notification_selector"
+        android:title=""
+        />
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/settings_selector"
+        android:title=""
+        />-->
+
+</menu>
