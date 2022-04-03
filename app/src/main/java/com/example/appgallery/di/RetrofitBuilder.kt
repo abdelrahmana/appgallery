@@ -1,11 +1,9 @@
 package com.example.appgallery.di
 
 import android.content.Context
-import android.content.SharedPreferences
-import androidx.hilt.work.HiltWorker
 import com.example.appgallery.BuildConfig
-import com.example.appgallery.apiconfig.UploadServiceLink
-import com.example.appgallery.apiconfig.WebService
+import com.example.appgallery.datasource.UploadServiceLink
+import com.example.appgallery.datasource.WebService
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.seven.util.PrefsUtil
@@ -13,11 +11,9 @@ import com.skydoves.sandwich.coroutines.CoroutinesResponseCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.components.FragmentComponent
 import dagger.hilt.android.components.ServiceComponent
 import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 import okhttp3.*
@@ -25,7 +21,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 

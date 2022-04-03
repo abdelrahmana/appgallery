@@ -5,16 +5,13 @@ import android.util.Log
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.appgallery.apiconfig.UploadServiceLink
+import com.example.appgallery.datasource.UploadServiceLink
 import dagger.hilt.android.qualifiers.ApplicationContext
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.*
 import java.util.*
 import javax.inject.Inject
-class UploadRepo @Inject constructor(var serviceLinkUpload: UploadServiceLink?,@ApplicationContext val context: Context) {
+class UploadRepo @Inject constructor(var serviceLinkUpload: UploadServiceLink?,
+                                     @ApplicationContext val context: Context,) {
     suspend fun uploadAmazonLink(/*query: LinkedHashMap<String, String>?*/
         query: String, restEndPoint: String, file: File
         ,completion:(String?, String?) -> Unit

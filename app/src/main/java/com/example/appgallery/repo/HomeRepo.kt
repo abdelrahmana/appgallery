@@ -1,35 +1,29 @@
 package com.example.appgallery.repo
 
-import com.example.appgallery.apiconfig.UploadServiceLink
-import com.example.appgallery.apiconfig.WebService
+import com.example.appgallery.database.AppDataBase
+import com.example.appgallery.datasource.UploadServiceLink
+import com.example.appgallery.datasource.WebService
+import com.example.appgallery.datasource.model.Image
 import com.example.appgallery.ui.auth.model.*
 import com.example.appgallery.ui.home.model.PhotosArray
-import com.example.appgallery.ui.home.model.PhotosResponseList
 import com.example.appgallery.ui.home.photosuser.PhotosOperationInterface
-import com.example.appgallery.workmanger.model.Datax
 import com.example.appgallery.workmanger.model.RequestUploadGson
 import com.example.appgallery.workmanger.model.RequestUploadGsonObject
 import com.example.appgallery.workmanger.model.ResponseUploadImage
 import com.skydoves.sandwich.onError
 import com.skydoves.sandwich.onException
 import com.skydoves.sandwich.onSuccess
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.ResponseBody
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import java.io.InputStream
-import java.nio.file.Files
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
-class HomeRepo @Inject constructor(val webService: WebService,var serviceLinkUpload: UploadServiceLink?) {
+class HomeRepo @Inject constructor(val webService: WebService,
+                                   var serviceLinkUpload: UploadServiceLink?,
+                                   var localDatabase:AppDataBase) {
 
     suspend fun uploadService(deviceId : String,completion: (String?, String?) -> Unit) {
         // lets get the home categories here and set the answer back to our viewmodel
@@ -212,6 +206,43 @@ class HomeRepo @Inject constructor(val webService: WebService,var serviceLinkUpl
             completion(null ,"error happend")
         }
     }
+
+    suspend fun getDataBaseLocalImages(completion: (List<Image>?, String?) -> Unit) {
+
+        val imageDao = localDatabase.imageDao()
+       val res = imageDao.getAll()
+        completion(res,null)
+       /* res.onSuccess {
+            completion(data ,null)
+
+        }
+        res.onException {
+            completion(null ,message.toString())
+
+
+        }
+        res.onError {
+            completion(null ,"error happend")
+        }*/
+    }
+   suspend fun insertToDataBase(arrayList: ArrayList<Image>/*completion: (List<Image>?, String?) -> Unit*/) {
+
+        val imageDao = localDatabase.imageDao()
+        imageDao.insert(arrayList)
+     /*   res.onSuccess {
+            completion(data ,null)
+
+        }
+        res.onException {
+            completion(null ,message.toString())
+
+
+        }
+        res.onError {
+            completion(null ,"error happend")
+        }*/
+    }
+
    /* suspend fun uploadAmazonLink(/*query: LinkedHashMap<String, String>?*/query: String,
                                                                           restEndPoint: String, file: File,completion:(String?, String?) -> Unit
     ) {

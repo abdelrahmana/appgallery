@@ -3,10 +3,12 @@ package com.example.appgallery.workmanger
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.example.appgallery.database.AppDataBase
+import com.example.appgallery.datasource.model.Image
+import com.example.appgallery.di.DaoDi
 import com.example.appgallery.di.RetrofitBuilder
 import com.example.appgallery.notification.Notifications
 import com.example.appgallery.repo.HomeRepo
@@ -26,7 +28,8 @@ import java.io.*
 public open class CoroutineWorkerC  @AssistedInject constructor(
     @Assisted  val context: Context,
     @Assisted params: WorkerParameters,//,
-    val util : Util
+    val util : Util//,
+  //  val localDataBase: AppDataBase
     // val homeRepo: HomeRepo
     ) : CoroutineWorker(context, params) {
 
@@ -39,9 +42,10 @@ public open class CoroutineWorkerC  @AssistedInject constructor(
              if (context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                        context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ){
 
+                           // prepare repo
                  val homeRepo =  HomeRepo(RetrofitBuilder().getRetrofitCall(applicationContext),
                      RetrofitBuilder().getRetrofitCallAmazon(applicationContext,
-                         "https://lw85zyto9a.execute-api.us-east-1.amazonaws.com/Prod/"))
+                         "https://lw85zyto9a.execute-api.us-east-1.amazonaws.com/Prod/"),DaoDi().getImageDao(context))
               /* HomeRepo(RetrofitBuilder().getRetrofitCall(applicationContext))*/
                  /*homeRepo.uploadService(util.getDeviceId()) { success, errors ->
                    success?.let { it ->
@@ -53,35 +57,83 @@ public open class CoroutineWorkerC  @AssistedInject constructor(
                        notification.runNotification(applicationContext)
                    }
                }*/
-                 val requestUploadGson = RequestUploadGson(ArrayList<Datax>().also { it.add(Datax("dasd",123,"jpg",
-                 "image")) })
-               //  val json = JsonObject()
-             //    json.addProperty("data",Gson().toJson(requestUploadGson.data))
-              //   val result = Gson().toJson(requestUploadGson)
-                 homeRepo.uploadImage(requestUploadGson) { success, errors ->
-                     success?.let { it ->
-                         val baseUrl: String = it.data[0].image_presignedUrl.split("original/").get(0)+"original/"
-                         val queryUrl: String = it.data[0].image_presignedUrl.split("original/").get(1)
-                         val restEndPoint = queryUrl.split("?").get(0).toString()
-                         val queries = queryUrl.split("?").get(1).toString()
-
-                         //baseUrl = baseUrl
-                         val newRepo =  UploadRepo(RetrofitBuilder().getRetrofitCallAmazon(applicationContext,
-                                 baseUrl),applicationContext)
-                       /*  homeRepo.serviceLinkUpload = RetrofitBuilder().getRetrofitCallAmazon(applicationContext,
-                             baseUrl)*/
-                         val notification = Notifications("link "+it.data[0].image_presignedUrl)
-                              notification.runNotification(applicationContext)
-
+                 // get local database
+                 CoroutineScope(Dispatchers.IO).launch {
+                     homeRepo.getDataBaseLocalImages { localImagesUploaded, errorsLocalDb ->
+                         val galleryImages = util.loadImagesfromSDCard()
+                         val filteredImages = getFilteredImages(
+                             localImagesUploaded ?: ArrayList(), galleryImages
+                         ) // get filtered arraylist now
+                         if (filteredImages.isNotEmpty()) {
+                             val lastUnUploadedImage = filteredImages[0] // descending
+                             val file = File(lastUnUploadedImage)
+                           val hashed =  util.md5(util.getBase64Image(lastUnUploadedImage)?:"")?:""
+                         val requestUploadGson = RequestUploadGson(ArrayList<Datax>().also {
+                             it.add(
+                                 Datax(
+                                     hashed, System.currentTimeMillis().toInt(), /*"jpg"*/ file.extension,
+                                     /*"image"*/file.name
+                                 )
+                             )
+                         })
+                         //  val json = JsonObject()
+                         //    json.addProperty("data",Gson().toJson(requestUploadGson.data))
+                         //   val result = Gson().toJson(requestUploadGson)
+                         // get amazon url
                          CoroutineScope(Dispatchers.IO).launch {
-                        putUploadLink(newRepo,it.data[0].image_presignedUrl,restEndPoint).await()
+                             homeRepo.uploadImage(requestUploadGson) { success, errors ->
+                                 success?.let { it ->
+                                     val baseUrl: String =
+                                         it.data[0].image_presignedUrl.split("original/")
+                                             .get(0) + "original/"
+                                     val queryUrl: String =
+                                         it.data[0].image_presignedUrl.split("original/").get(1)
+                                     val restEndPoint = queryUrl.split("?").get(0).toString()
+                                     val queries = queryUrl.split("?").get(1).toString()
+
+                                     //baseUrl = baseUrl
+                                     val newRepo = UploadRepo(
+                                         RetrofitBuilder().getRetrofitCallAmazon(
+                                             applicationContext,
+                                             baseUrl
+                                         ), applicationContext
+                                     )
+                                     /*  homeRepo.serviceLinkUpload = RetrofitBuilder().getRetrofitCallAmazon(applicationContext,
+                             baseUrl)*/
+                                     val notification =
+                                         Notifications("link " + it.data[0].image_presignedUrl)
+                                     notification.runNotification(applicationContext)
+                                     //   CoroutineScope(Dispatchers.IO).async {
+                                     //    homeRepo.getDataBaseLocalImages { localImagesUploaded, errorsLocalDb ->
+                                     // current uploaded image
+                                     CoroutineScope(Dispatchers.IO).launch {
+                                         //         results.await()
+                                         putUploadLinkAmazon(lastUnUploadedImage,
+                                            // localImagesUploaded,
+                                             homeRepo,
+                                             newRepo,
+                                             it.data[0].image_presignedUrl,
+                                             restEndPoint
+                                         ).await()
+                                     }
+                                     /* errorsLocalDb?.let { it ->
+                                     val notifications = Notifications(it)
+                                     notifications.runNotification(applicationContext)
+                                 }*/
+                                     //        }
+                                 }
+
+                                 //  }
+                                 errors?.let { it ->
+                                     val notification = Notifications(it)
+                                     notification.runNotification(applicationContext)
+                                 }
+                             }
                          }
                      }
-                     errors?.let { it ->
-                         val notification = Notifications(it)
-                         notification.runNotification(applicationContext)
-                     }
                  }
+                 }
+
 
            }
            Result.success()
@@ -90,7 +142,8 @@ public open class CoroutineWorkerC  @AssistedInject constructor(
 
     }
 
-     suspend fun putUploadLink(homeRepo: UploadRepo, queryUrl: String, restEndPoint: String): Deferred<Unit> {
+     suspend fun putUploadLinkAmazon(lastUnUploadingImage : String,
+                                     /*imagesSaved : List<Image>?,*/ homeRepo: HomeRepo, uploadRepo: UploadRepo, queryUrl: String, restEndPoint: String): Deferred<Unit> {
         val res =  CoroutineScope(Dispatchers.IO).async {
          //   var newQuery = "{"+ queryUrl+"}"
          //   val gson = Gson().toJson(newQuery)
@@ -112,16 +165,23 @@ public open class CoroutineWorkerC  @AssistedInject constructor(
           /*  val am: AssetManager = context.getAssets()
             val inputStream: InputStream = am.open("Capture.PNG")
             inputStream*/
-            val allImages = util.loadImagesfromSDCard()
-            allImages.let { it ->
-                val file=File(it[0])
+          //  val galleryImages = util.loadImagesfromSDCard()
+       //    val filteredImages = getFilteredImages(imagesSaved?:ArrayList(),galleryImages) // get filtered arraylist now
+         //   if (filteredImages.isNotEmpty())
+            lastUnUploadingImage.let { currentImage ->
+                val file=File(currentImage/*[0]*/)
 
-                homeRepo.uploadAmazonLink(/*splitQuery(queryUrl)*/queryUrl,
+                uploadRepo.uploadAmazonLink(/*splitQuery(queryUrl)*/queryUrl,
                     restEndPoint,file
                 ) { success, errors ->
                     success?.let { it ->
                         val notification = Notifications("success amazon uploaded")
                         notification.runNotification(applicationContext)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            homeRepo.insertToDataBase(ArrayList<Image>().also {it.add(Image(currentImage)) })
+
+                            doWork()
+                        }
                     }
                     errors?.let { it ->
                         val notification = Notifications(it)
@@ -164,6 +224,21 @@ public open class CoroutineWorkerC  @AssistedInject constructor(
         }
         return res
     }
+
+    private fun getFilteredImages(imagesSaved: List<Image>, galleryImages: ArrayList<String>): ArrayList<String> {
+        val newArrayList = ArrayList<String>()
+        newArrayList.addAll(galleryImages)
+        for (i in 0 until imagesSaved.size) { // local data base images
+            for (j in 0 until galleryImages.size){ // gallery images
+                if (imagesSaved[i].imagePath == galleryImages[j]) {
+                    newArrayList.remove(galleryImages[j]) // remove item in filteration
+                    break // break first loop
+                }
+            }
+        }
+        return newArrayList
+    }
+
     @Throws(UnsupportedEncodingException::class)
     open fun splitQuery(url: String): LinkedHashMap<String, String>? {
         val query_pairs: LinkedHashMap<String, String> = LinkedHashMap()

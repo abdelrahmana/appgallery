@@ -14,7 +14,8 @@ import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Module
-@InstallIn(ViewModelComponent::class, FragmentComponent::class, ActivityComponent::class,ServiceComponent::class)
+@InstallIn(ViewModelComponent::class, FragmentComponent::class,
+    ActivityComponent::class,ServiceComponent::class)
 class WorkMangerDi {
     @Provides
     fun getConstrains(): Constraints {

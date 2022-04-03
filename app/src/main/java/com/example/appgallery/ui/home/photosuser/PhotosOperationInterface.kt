@@ -1,6 +1,6 @@
 package com.example.appgallery.ui.home.photosuser
 
-import com.example.appgallery.apiconfig.WebService
+import com.example.appgallery.datasource.WebService
 import com.example.appgallery.ui.home.PhotosViewModel
 import com.example.appgallery.ui.home.model.PhotosUserResponse
 import com.skydoves.sandwich.ApiResponse

@@ -109,9 +109,9 @@ class MainActivity : AppCompatActivity() {
                     hashMapAll.put(Util.FACES,allFaces)
                     hashMapAll.put(Util.NORMAL_IMAGES,allNonFaces)
 
-                    counter++
-                    if (counter<arrayList.size)
-                        addFacesNonFacesCoroutine(arrayList)
+                    counter++ // increase number here
+                    if (counter<arrayList.size) // array list contains sub arrays
+                        addFacesNonFacesCoroutine(arrayList) // call api upload again
                     else
                         Log.v("all_faces", hashMapAll.get(Util.FACES)!!.size.toString())
                       Log.v("non_all_faces", hashMapAll.get(Util.NORMAL_IMAGES)!!.size.toString())

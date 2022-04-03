@@ -17,7 +17,6 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
@@ -31,7 +30,6 @@ import androidx.work.*
 import com.andrognito.flashbar.Flashbar
 import com.andrognito.flashbar.anim.FlashAnim
 import com.example.appgallery.R
-import com.example.appgallery.util.NameUtil.CAMERA
 import com.example.appgallery.util.NameUtil.GALLERY
 import com.example.appgallery.workmanger.TrackingGalleryWork
 import com.google.mlkit.vision.common.InputImage
@@ -44,6 +42,8 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -64,6 +64,33 @@ class Util @Inject constructor(@ApplicationContext val context: Context) {
         else if (checkEmptyOrNot is java.util.ArrayList<*>)
             return (checkEmptyOrNot).size>0
         return false // no supports value
+    }
+    fun getBase64Image(image : String): String? {
+      val baseImage=   android.util.Base64.encodeToString(image.toByteArray(charset("UTF-8"))
+          , android.util.Base64.NO_WRAP)
+        return baseImage
+    }
+    fun md5(s: String): String? {
+        val MD5 = "MD5"
+        try {
+            // Create MD5 Hash
+            val digest: MessageDigest = MessageDigest
+                .getInstance(MD5)
+            digest.update(s.toByteArray())
+            val messageDigest: ByteArray = digest.digest()
+
+            // Create Hex String
+            val hexString = StringBuilder()
+            for (aMessageDigest in messageDigest) {
+                var h = Integer.toHexString(0xFF and aMessageDigest.toInt())
+                while (h.length < 2) h = "0$h"
+                hexString.append(h)
+            }
+            return hexString.toString()
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+        }
+        return ""
     }
     fun showSnackMessages(
         activity: Activity?,

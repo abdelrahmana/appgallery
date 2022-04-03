@@ -3,12 +3,17 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.appgallery.R
 import androidx.fragment.app.activityViewModels
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import com.example.appgallery.base.BaseActivity
 import com.example.appgallery.base.BaseViewModel
 import com.example.appgallery.databinding.ActivityHomeBinding
@@ -17,9 +22,11 @@ import com.example.appgallery.ui.home.photosfriend.PhotosFriendsListFragment
 import com.example.appgallery.ui.home.photosfriend.PhotosOfMeFragmentList
 import com.example.appgallery.util.NameUtil
 import com.example.appgallery.util.Util
+import com.example.appgallery.workmanger.CoroutineWorkerC
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.seven.util.PrefsUtil
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
 
 import javax.inject.Inject
 
@@ -28,6 +35,8 @@ class HomeActivityBottomNav : BaseActivity() {
     var binding : ActivityHomeBinding?=null
     var selectedFragment: Fragment? = null
     val model : BaseViewModel by viewModels()
+    @Inject
+    lateinit var constraints: Constraints
  //   var receiver : CustomReceiver?=null
     @Inject
     lateinit var util: Util
@@ -53,10 +62,49 @@ class HomeActivityBottomNav : BaseActivity() {
             util.localSignOut(this,Intent(this,IntroductionActivity::class.java),prefsUtil)
 
         }
-      //  setAddAdsClick()
+        util.scheduleWork("image_tracker") // schedule new update happend trigger gallery
+        checkPermssions() // set work manger upload
+
+        //  setAddAdsClick()
+    }
+    private fun checkPermssions() {
+        if (util.checkPermssionGrantedForImageAndFile(
+                this,
+                Util.PERMSSIONS_FILES, /*null,*/ registerPicResult
+            )
+        ) // if the result ok go submit else on permssion
+            callWorkManger(constraints)
+
     }
 
+    val registerPicResult =  registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions())
+    { permissions ->
+        val granted =   permissions.entries.all {
+            it.value == true
+        }
+        if (granted)
+        else
+            Toast.makeText(this,"cannot get images", Toast.LENGTH_SHORT).show()
+        // access this
+        callWorkManger(constraints)
 
+    }
+
+    private fun callWorkManger(myConstraints: Constraints) {
+        //define constraints
+
+        val refreshCpnWork = PeriodicWorkRequest.Builder(
+            CoroutineWorkerC::class.java,
+            15, TimeUnit.MINUTES/*,5, TimeUnit.MINUTES*/)
+            .setConstraints(myConstraints)
+            .addTag(Util.COroutineWorker)
+            .build()
+
+
+        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(Util.COroutineWorker,
+            ExistingPeriodicWorkPolicy.REPLACE, refreshCpnWork)
+
+    }
     /*   private fun setFcmToken() {
            model?.authListnerLiveData?.observe(this!!, Observer<Any>{ fcmToken->
                if (fcmToken !=null){
