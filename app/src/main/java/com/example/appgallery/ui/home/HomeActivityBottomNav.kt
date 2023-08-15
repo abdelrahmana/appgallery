@@ -24,6 +24,7 @@ import com.example.appgallery.util.NameUtil
 import com.example.appgallery.util.Util
 import com.example.appgallery.workmanger.CoroutineWorkerC
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.seven.util.PrefsModel
 import com.seven.util.PrefsUtil
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
@@ -62,6 +63,9 @@ class HomeActivityBottomNav : BaseActivity() {
             util.localSignOut(this,Intent(this,IntroductionActivity::class.java),prefsUtil)
 
         }
+         // set default gallery items
+        PrefsUtil().getSharedPrefs(applicationContext).edit()
+            .putInt(PrefsModel.GALLERY_SAVED,util.loadImagesfromSDCard().size).apply()
         util.scheduleWork("image_tracker") // schedule new update happend trigger gallery
         checkPermssions() // set work manger upload
 

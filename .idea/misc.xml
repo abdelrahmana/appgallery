@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
@@ -15,6 +14,7 @@
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_container.xml" value="0.17481884057971014" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_home.xml" value="0.17708333333333334" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_introduction.xml" value="0.1" />
+        <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_main.xml" value="0.16847826086956522" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/activity_validation.xml" value="0.2" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_permission.xml" value="0.17481884057971014" />
         <entry key="..\:/New folder/appgallery-master/appgallery-master/app/src/main/res/layout/fragment_phone.xml" value="0.15" />

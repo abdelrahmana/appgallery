@@ -13,9 +13,12 @@ import com.example.appgallery.di.RetrofitBuilder
 import com.example.appgallery.notification.Notifications
 import com.example.appgallery.repo.HomeRepo
 import com.example.appgallery.repo.UploadRepo
+import com.example.appgallery.util.NameUtil
 import com.example.appgallery.util.Util
 import com.example.appgallery.workmanger.model.Datax
 import com.example.appgallery.workmanger.model.RequestUploadGson
+import com.seven.util.PrefsModel
+import com.seven.util.PrefsUtil
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.*
@@ -35,6 +38,13 @@ public open class CoroutineWorkerC  @AssistedInject constructor(
 
 
     override suspend fun doWork(): Result {
+        return WorkMangerDomain(applicationContext).doWork(util,PrefsUtil(),ImplementerNormalUpload(context))
+
+        /*
+        // when ever run this please do in your scope to save to gallery sharedprefs thes size
+        val galleryImages = util.loadImagesfromSDCard()
+        PrefsUtil().getSharedPrefs(applicationContext).edit()
+            .putInt(PrefsModel.GALLERY_SAVED,galleryImages.size).apply()
        val res =  CoroutineScope(Dispatchers.IO).async {
            // this should access repo directly
            //  Toast.makeText(applicationContext,"success",Toast.LENGTH_SHORT).show()
@@ -60,10 +70,12 @@ public open class CoroutineWorkerC  @AssistedInject constructor(
                  // get local database
                  CoroutineScope(Dispatchers.IO).launch {
                      homeRepo.getDataBaseLocalImages { localImagesUploaded, errorsLocalDb ->
-                         val galleryImages = util.loadImagesfromSDCard()
+                         PrefsUtil().getSharedPrefs(context).edit()
+                             .putInt(PrefsModel.GALLERY_SAVED,galleryImages.size).apply()
                          val filteredImages = getFilteredImages(
                              localImagesUploaded ?: ArrayList(), galleryImages
                          ) // get filtered arraylist now
+
                          if (filteredImages.isNotEmpty()) {
                              val lastUnUploadedImage = filteredImages[0] // descending
                              val file = File(lastUnUploadedImage)
@@ -139,7 +151,7 @@ public open class CoroutineWorkerC  @AssistedInject constructor(
            Result.success()
        }
        return res.await()
-
+*/
     }
 
      suspend fun putUploadLinkAmazon(lastUnUploadingImage : String,

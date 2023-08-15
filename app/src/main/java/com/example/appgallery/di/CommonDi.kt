@@ -22,6 +22,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.components.FragmentComponent
+import dagger.hilt.android.components.ServiceComponent
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -29,7 +30,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Qualifier
 
 @Module
-@InstallIn(ViewModelComponent::class, FragmentComponent::class,ActivityComponent::class)
+@InstallIn(ViewModelComponent::class, FragmentComponent::class,ActivityComponent::class,ServiceComponent::class)
 class CommonDi {
 
     @Provides
@@ -44,11 +45,7 @@ class CommonDi {
         dialog.getWindow()!!.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         return dialog
     }
-    @Provides
-    fun getSharedPrefs(@ApplicationContext context: Context?) : PrefsUtil {
-        return PrefsUtil()
-        //    val guest = PrefsUtil.getSharedPrefs(context).getBoolean(PrefsModel.isGuestUser,false)
-    }
+
     @Provides
     fun getGsonObjet(@ApplicationContext context: Context): GetObjectGson {
         return  GetObjectGson()

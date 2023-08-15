@@ -9,6 +9,7 @@ import com.seven.util.PrefsModel.userModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.seven.util.PrefsModel.BRIDECOUNT
+import com.seven.util.PrefsModel.GALLERY_SAVED
 import com.seven.util.PrefsModel.localLanguage
 
 class PrefsUtil {
@@ -73,6 +74,11 @@ class PrefsUtil {
         val typeToken = object : TypeToken<ResponseLoginPhone?>() {}.type
         val obj = gson.fromJson<ResponseLoginPhone>(jso, typeToken) ?:null //ResponseLogin(Data("", null))
         return obj
+
+    }
+    fun getLocalGallerySavedSize(ctx: Context): Int? { // this should return the object
+        val gallerySize = getSharedPrefs(ctx).getInt(GALLERY_SAVED, 0) // get the overall object please
+        return gallerySize
 
     }
   /*  fun setOrderModel(context: Context, orderResponse: RequestOrderBody?) {

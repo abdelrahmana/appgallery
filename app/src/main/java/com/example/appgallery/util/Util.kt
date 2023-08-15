@@ -146,6 +146,7 @@ class Util @Inject constructor(@ApplicationContext val context: Context) {
         transaction?.commit()
 
     }
+
     fun scheduleWork(tag: String) {
         val photoCheckBuilder = OneTimeWorkRequest.Builder(TrackingGalleryWork::class.java)
     /*    val photoCheckBuilder = PeriodicWorkRequest.Builder(TrackingGalleryWork::class.java,

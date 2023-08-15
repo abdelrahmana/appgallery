@@ -15,5 +15,6 @@ object PrefsModel {
     val BEARER = "Bearer "
     val NO_TOKEN = "NO-TOKEN"
     val userModel = "user_data"
+    val GALLERY_SAVED = "GallerySize"
     val sharedPrefsName = "prefs"
 }

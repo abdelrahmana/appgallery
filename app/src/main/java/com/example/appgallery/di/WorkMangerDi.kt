@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import com.example.appgallery.util.Util
+import com.seven.util.PrefsUtil
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,7 +25,11 @@ class WorkMangerDi {
             .build()
         return  myConstraints
     }
-
+    @Provides
+    fun getSharedPrefs(@ApplicationContext context: Context?) : PrefsUtil {
+        return PrefsUtil()
+        //    val guest = PrefsUtil.getSharedPrefs(context).getBoolean(PrefsModel.isGuestUser,false)
+    }
     @Provides
     fun getUtil(@ApplicationContext context: Context): Util {
         return  Util(context)
